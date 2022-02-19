@@ -1,41 +1,42 @@
-let numShips = 3; //default ship number
+let noShips = 3; //default ship number
 let Player1Ships;
 let Player2Ships;
 
-var p1ShipsLoc = matrix();// 
-var p2ShipsLoc = matrix();// 
-var p1sFireAtLoc = matrix();// 
-var p2sFireAtLoc = matrix();// 
-var p1ShipsLocArry2Row;
-var p2ShipsLocArry2Row;
 
-function matrix(){
+function matrix( rows, cols, defaultValue){
 
   var arr = [];
 
   // Creates all lines:
-  for(var i=0; i < 10; i++){
+  for(var i=0; i < rows; i++){
 
       // Creates an empty line
       arr.push([]);
 
       // Adds cols to the empty line:
-      arr[i].push( new Array(10));
+      arr[i].push( new Array(cols));
 
-      for(var j=0; j < 10; j++){
+      for(var j=0; j < cols; j++){
         // Initializes:
-        arr[i][j] = 0;
+        arr[i][j] = defaultValue;
       }
   }
 
 return arr;
 }
 
+var p1ShipsLoc = matrix( 10, 10, 0);// 10 lines, 10 cols filled with 0
+var p2ShipsLoc = matrix( 10, 10, 0);// 10 lines, 10 cols filled with 0
+var p1sFireAtLoc = matrix( 10, 10, 0);// 10 lines, 10 cols filled with 0
+var p2sFireAtLoc = matrix( 10, 10, 0);// 10 lines, 10 cols filled with 0
+var p1ShipsLocArry2Row;
+var p2ShipsLocArry2Row;
+
 function loadStoredVars() //stores local json variables
 {
   p1ShipsLoc = JSON.parse(window.localStorage.getItem("p1ShipsLoc")); // Retrieving
   p2ShipsLoc = JSON.parse(window.localStorage.getItem("p2ShipsLoc")); // Retrieving
-  numShips = JSON.parse(window.localStorage.getItem("numShips")); // Retrieving
+  noShips = JSON.parse(window.localStorage.getItem("noShips")); // Retrieving
   p1ShipsLocArry2Row=JSON.parse(window.localStorage.getItem("p1ShipsLocArry2Row")); // Retrieving
   p2ShipsLocArry2Row=JSON.parse(window.localStorage.getItem("p2ShipsLocArry2Row")); // Retrieving
   
@@ -80,34 +81,38 @@ function fillShipsLoc(arr,shipsLoc){
   //console.log(strArry[0].toLowerCase().charCodeAt(0) - 97);
   //console.log(strArry[0].toLowerCase()[1]);
   let col,row;
-  let shipNo=1;
-  for(var i=0;i<strArry.length;i++)
-    {
-      col=strArry[i].toLowerCase().charCodeAt(0) - 97;
-      //row=Number(strArry[i].toLowerCase()[1])-1;
-      row=Number(strArry[i].toLowerCase().substring(1,strArry[i].length))-1;
+  let shipNo;
+   while(true)
+   {
+     col=strArry[i].toLowerCase().charCodeAt(0) - 97;
+     //row=Number(strArry[i].toLowerCase()[1])-1;
+     row=Number(strArry[i].toLowerCase().substring(1,strArry[i].length))-1;
+     while(arr[row][col] < 1 || arr[row][col] > 10)
+     {
+        console.log("Invalid Placement of ships");
+     }
+     while(arr[row][col] > 1 && arr[row][col] < 10)
+     {
+       arr[row][col].fillShipsLoc(); 
+       shipNo++;
+     }
+   }
       
-
-      console.log(row,col);
-      if(i==1)shipNo=2;
-      if(i==3)shipNo=3;
-      if(i==6)shipNo=4;
-      if(i==10)shipNo=5;
-      arr[row][col]= shipNo;
+       
       //console.log(shipNo);
       //console.log(arr[row][col]);
       
-    }
+    
     //console.log(arr);
    
 }
 
 //gets ships for players
 function getNoOfShips() {
-  numShips = prompt("Please enter number of ships", numShips);
-  if (numShips != null) {
+  noShips = prompt("Please enter number of ships", noShips);
+  if (noShips != null) {
     document.getElementById("getShipsForP1Btn").disabled = false;
-    document.getElementById("BShips").innerHTML = numShips  + " ships will be used!";
+    document.getElementById("BShips").innerHTML = noShips  + " ships will be used!";
     document.getElementById("getNoOfShipsBtn").disabled = true;
   }
 }
@@ -139,7 +144,7 @@ function getShipsForP2() {
     document.getElementById("playGameBtn").disabled = false;
     window.localStorage.setItem("p1ShipsLoc", JSON.stringify(p1ShipsLoc)); // Saving
     window.localStorage.setItem("p2ShipsLoc", JSON.stringify(p2ShipsLoc)); // Saving
-    window.localStorage.setItem("numShips", JSON.stringify(numShips)); // Saving
+    window.localStorage.setItem("noShips", JSON.stringify(noShips)); // Saving
     //console.log("saveP1="+p1ShipsLocArry2Row);
     window.localStorage.setItem("p1ShipsLocArry2Row", JSON.stringify(p1ShipsLocArry2Row)); // Saving
     //console.log("saveP2="+p2ShipsLocArry2Row);
@@ -238,7 +243,7 @@ function showFireAtLocCellsForPlayer(plyrNo) {
     let opnShipsLocCol=0;
     let opnShipsLocStr="";
     let noShipsArrLen=0;
-    for(var a=1;a<=numShips;a++)
+    for(var a=1;a<=noShips;a++)
     {
       noShipsArrLen=noShipsArrLen+a;
     }
@@ -250,7 +255,7 @@ function showFireAtLocCellsForPlayer(plyrNo) {
         arrElm=plyrFireAtLocaArry[i][j];
         //console.log(typeof plyrFireAtLocaArry);
         //console.log("plyrFireAtLocaArry="+plyrFireAtLocaArry);
-        arrElmShip=OpnplyrShipsLocaArry[i][j]; 
+        arrElmShip=OpnplyrShipsLocaArry[i][j];
         //console.log("noShipsArrLen="+noShipsArrLen);
         //console.log("opnShipsLocArry2Row.length="+opnShipsLocArry2Row.length);
         //console.log("opnShipsLocArry="+opnShipsLocArry2Row);
@@ -303,12 +308,12 @@ function showFireAtLocCellsForPlayer(plyrNo) {
 }
 
 //calculates the number of ships down a player has to detect win
-function Gameover(plyrNo) {
+function NumbOfShipsDown(plyrNo) {
   let nShipsDn=0;
   let noShipsArrLen=0;
   let shipNo=1;
   let opnShipsLocArry2Row;
-    for(var a=1;a<=numShips;a++)
+    for(var a=1;a<=noShips;a++)
     {
       noShipsArrLen=noShipsArrLen+a;
     }
@@ -341,28 +346,14 @@ function Gameover(plyrNo) {
 }
 function frCellByP1() {
   let nShipsDn=0;
-  let frCell = prompt("Pick a space on the opponent's board to 'fire' at.", "[J10]");
-
-  let row, col;
-  col = frCell.toUpperCase().charCodeAt(1)-65;
- 
-  if(frCell.length == 4)
-  { row = frCell.substring(2,3)-1;}
-  else if(frCell.length == 5)
-  { row = frCell.substring(2,4)-1;}
-
-  if(row < 0 || row > 9 || col < 0 || col > 9)
-  {
-    window.alert("Attack coordinate out of bounds. Try again.");
-  }
-
-  if (p1sFireAtLoc[row][col] == 0) {
+  frCell = prompt("Pick a space on the opponent's board to 'fire' at.", "[J10]");
+  if (frCell != null) {
     fillFireAtLoc(p1sFireAtLoc,frCell);
     document.getElementById("P1FrCell").innerHTML = frCell  + " Fire at locations!";
     showFireAtLocCellsForPlayer('P1');
-    nShipsDn=Gameover('P1');
-    document.getElementById("P1FrHitStatus").innerHTML = nShipsDn  + " ship down! "+(numShips-nShipsDn) + " to go";
-    if((numShips-nShipsDn)==0)
+    nShipsDn=NumbOfShipsDown('P1');
+    document.getElementById("P1FrHitStatus").innerHTML = nShipsDn  + " ship down! "+(noShips-nShipsDn) + " to go";
+    if((noShips-nShipsDn)==0)
     {
       document.getElementById("gameStatus").innerHTML = " Congratulations! game won by player 1.";
       document.getElementById("turnByP2Btn").disabled = true;
@@ -373,35 +364,18 @@ function frCellByP1() {
       document.getElementById("frCellByP1Btn").disabled = true;
     }
   }
-  else{
-    window.alert("Invalid attack coordinate. Try again.");
-  }
 }
 
 function frCellByP2() {
   let nShipsDn=0;
   frCell = prompt("Pick a space on the opponent's board to 'fire' at.", "[A10]");
-
-  let row, col;
-  col = frCell.toUpperCase().charCodeAt(1)-65;
- 
-  if(frCell.length == 4)
-  { row = frCell.substring(2,3)-1;}
-  else if(frCell.length == 5)
-  { row = frCell.substring(2,4)-1;}
-
-  if(row < 0 || row > 9 || col < 0 || col > 9)
-  {
-    window.alert("Attack coordinate out of bounds. Try again.");
-  }
-
-  if (p2sFireAtLoc[row][col] == 0) {
+  if (frCell != null) {
     fillFireAtLoc(p2sFireAtLoc,frCell);
     document.getElementById("P2FrCell").innerHTML = frCell  + " Fire at locations!";
     showFireAtLocCellsForPlayer('P2');
-    nShipsDn=Gameover('P2');
-    document.getElementById("P2FrHitStatus").innerHTML = nShipsDn  + " ship down! "+(numShips-nShipsDn) + " to go";
-    if((numShips-nShipsDn)==0)
+    nShipsDn=NumbOfShipsDown('P2');
+    document.getElementById("P2FrHitStatus").innerHTML = nShipsDn  + " ship down! "+(noShips-nShipsDn) + " to go";
+    if((noShips-nShipsDn)==0)
     {
       document.getElementById("gameStatus").innerHTML = " Congratulations! game won by player 2.";
       document.getElementById("turnByP2Btn").disabled = true;
@@ -411,9 +385,6 @@ function frCellByP2() {
       document.getElementById("turnByP1Btn").disabled = false;
       document.getElementById("frCellByP2Btn").disabled = true;
     }
-  }
-  else{
-    window.alert("Invalid attack coordinate. Try again.");
   }
 }
 
