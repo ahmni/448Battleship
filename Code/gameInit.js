@@ -510,27 +510,6 @@ function attack(shipArr,attackLocation){
    
 }
 
-function specialAttack(shipArr, attackLocation) {
-    let col = attackLocation.toLowerCase().charCodeAt(0) - 97;
-    let row = Number(attackLocation.toLowerCase().substring(1, attackLocation.length)) - 1;
-
-    if (shipArr[row][col] != 0) {
-        alert("Invalid attack position.");
-        return;
-    }
-
-    let originalCol = attackLocation.toLowerCase().charCodeAt(0) - 97;
-
-    for (let i = 0; i < 3; i++) {
-        for (let j = 0; j < 3; j++) {
-            shipArr[row - 1][col - 1] = 1;
-            col++;
-        }
-        row++;
-        col = originalCol;
-    }
-}
-
 function showFireLocations(plyrNo) {
   
   //let btnId="fireAtBy"+ plyrNo +"Btn";
@@ -663,6 +642,47 @@ function Gameover(plyrNo) {
     }
   return nShipsDn;
 }
+function ShipHealthBar() {
+  let nShipsDn=0;
+  let noShipsArrLen=0;
+  let shipNo=numShips;
+  let enemyShipLocString;
+    for(var a=1;a<=numShips;a++)
+    {
+      noShipsArrLen=noShipsArrLen+a;
+    }
+    if(plyrNo=="P1")
+    {
+      enemyShipLocString=p2ShipLocArr;
+    }
+    else
+    {
+      enemyShipLocString=p1ShipLocArr;
+    }
+      
+  for(var i=0;i<noShipsArrLen;i++)
+    {
+      if(i==1)shipNo=2;
+      if(i==3)shipNo=3;
+      if(i==6)shipNo=4;
+      if(i==10)shipNo=5;
+      if(enemyShipLocString[1][i]==1)
+      {
+        shipNo=shipNo-1;
+        if(shipNo==0)
+        {
+          nShipsDn=nShipsDn+1;
+        }
+        if(nShipsDn = numShips)
+        {
+          prompt("Ship has been Sunk");
+        }
+      }
+      
+    }
+   return nShipsDn;
+ 
+}
 
 function frCellByP1() {
   let nShipsDn=0;
@@ -686,7 +706,7 @@ function frCellByP1() {
 
     document.getElementById("P1FrCell").innerHTML = frCell  + " Fire at locations!";
     showFireLocations('P1');
-    nShipsDn=Gameover('P1');
+    nShipsDn=ShipHealthBar('P1');
     document.getElementById("P1FrHitStatus").innerHTML = nShipsDn  + " ship down! "+(numShips-nShipsDn) + " to go";
     if((numShips-nShipsDn)==0)
     {
@@ -725,7 +745,7 @@ function frCellByP2() {
     attack(p2sFireLoc,frCell);
     document.getElementById("P2FrCell").innerHTML = frCell  + " Fire at locations!";
     showFireLocations('P2');
-    nShipsDn=Gameover('P2');
+    nShipsDn=ShipHealthBar('P2');
     document.getElementById("P2FrHitStatus").innerHTML = nShipsDn  + " ship down! "+(numShips-nShipsDn) + " to go";
     if((numShips-nShipsDn)==0)
     {
@@ -870,3 +890,5 @@ function markAIAttack(attackCoordinate) {
     document.getElementById("frCellByP2Btn").disabled = true;
   }
 }
+
+
