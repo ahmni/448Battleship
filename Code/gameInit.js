@@ -929,6 +929,14 @@ function askForSpecial() {
   }
   let nShipsDn=0;
   let frCell = prompt("Pick a space on the opponent's board to 'fire' at.", "[J10]");
+
+  //Check if frCell is valid
+  //If frCell is not valid
+  if(frCellValid(frCell) == false)
+  {
+    //Return to end function
+    return;
+  }
   
   let row, col;
   col = frCell.toUpperCase().charCodeAt(1)-65;
@@ -941,6 +949,9 @@ function askForSpecial() {
   if(row < 0 || row > 9 || col < 0 || col > 9)
   {
     window.alert("Attack coordinate out of bounds. Try again.");
+
+    //Return to end function
+    return;
   }
 
   if (p1sFireLoc[row][col] == 0) { // check if sunk
@@ -978,6 +989,14 @@ function askForSpecialP2() {
   }
   let nShipsDn=0;
   let frCell = prompt("Pick a space on the opponent's board to 'fire' at.", "[J10]");
+
+  //Check if frCell is valid
+  //If frCell is not valid
+  if(frCellValid(frCell) == false)
+  {
+    //Return to end function
+    return;
+  }
   
   let row, col;
   col = frCell.toUpperCase().charCodeAt(1)-65;
@@ -990,6 +1009,9 @@ function askForSpecialP2() {
   if(row < 0 || row > 9 || col < 0 || col > 9)
   {
     window.alert("Attack coordinate out of bounds. Try again.");
+
+    //Return to end function
+    return;
   }
 
   if (p2sFireLoc[row][col] == 0) { // check if sunk
@@ -1237,10 +1259,88 @@ function Gameover(plyrNo) {
   return nShipsDn;
 }
 
+//A function that is used to check if an input is valid or not
+//Returns true if frCell is valid or false if not
+function frCellValid(frCell)
+{
+  //Firstly, check that frCell is an input
+  //If frCell is null
+  if(frCell == null)
+  {
+    //Tell the user that the input is canelded
+    alert("Input canceled");
+
+    //Return false
+    return false;
+  }
+
+  //Otherwise, if frCell is an empty string
+  if(frCell.length == 0)
+  {
+    //Tell the user that the input is empty
+    alert("The input is empty. Please try again");
+
+    //Return false
+    return false;
+  }
+  
+  //Otherwise, if frCell has spaces/whitespace
+  if(frCell.indexOf(' ') >= 0)
+  {
+    //Tell the user that the input has whitespace
+    alert("The input has whitespace. Please try again");
+
+    //Return false
+    return false;
+  }
+
+  //Otherwise, if the length of frCell is not 4 or 5
+  if(frCell.length < 4 || frCell.length > 5)
+  {
+    //Tell the user that the length of the input must be 4 or 5
+    alert("The length of input is incorrect. Must be 4 or 5 characters long. Please try again");
+
+    //Return false
+    return false;
+  }
+
+  //Otherwise, if frCell is not surrounded by brackets
+  if(frCell.charAt(0) != '[' || frCell.charAt(frCell.length-1) != ']')
+  {
+    //Tell the user that the input is not surround by brackets
+    alert("The input is not surrounded by brackets. Please try again");
+
+    //Return false
+    return false;
+  }
+
+  //Next, check if row is valid number
+  let row = Number(frCell.substring(2, frCell.length-1));
+
+  //If row is not a number
+  if(isNaN(row))
+  {
+    //Tell the user that the row is not a number
+    alert("The row is not a number. Please try again.");
+
+    //Return false
+    return false;
+  }
+
+  //Otherwise, frCell is valid and return true
+  return true;
+}
 function frCellByP1() {
   let nShipsDn=0;
   let frCell = prompt("Pick a space on the opponent's board to 'fire' at.", "[J10]");
-  
+
+  //If the frCell is not a valid input
+  if(frCellValid(frCell) == false)
+  {
+    //Return to end function
+    return;
+  }
+
   let row, col;
   col = frCell.toUpperCase().charCodeAt(1)-65;
  
@@ -1252,6 +1352,9 @@ function frCellByP1() {
   if(row < 0 || row > 9 || col < 0 || col > 9)
   {
     window.alert("Attack coordinate out of bounds. Try again.");
+
+    //Return to end function
+    return;
   }
 
   if (p1sFireLoc[row][col] == 0) { // check if sunk
@@ -1283,6 +1386,14 @@ function frCellByP2() {
   let nShipsDn=0;
   frCell = prompt("Pick a space on the opponent's board to 'fire' at.", "[A10]");
 
+  //Check if frCell is valid
+  //If the frCell is not a valid input
+  if(frCellValid(frCell) == false)
+  {
+    //Return to end function
+    return;
+  }
+
   let row, col;
   col = frCell.toUpperCase().charCodeAt(1)-65;
  
@@ -1294,6 +1405,9 @@ function frCellByP2() {
   if(row < 0 || row > 9 || col < 0 || col > 9)
   {
     window.alert("Attack coordinate out of bounds. Try again.");
+
+    //Return to end function
+    return;
   }
 
   if (p2sFireLoc[row][col] == 0) {
@@ -1577,7 +1691,6 @@ function mediumAttack() {
       }
     }
   }
-  console.log(hitCoordinates);
   markAIAttack(temp);
   if(p1ShipLoc[row][col] != 0 || specBoolHit) { //checks to see if there was a ship present and will sort the array
     hitship = true; 
@@ -1662,7 +1775,6 @@ function mediumAttack() {
           }
         }
       }
-      console.log(hitCoordinates);
 
       differentShips = false;
     }
@@ -1671,7 +1783,6 @@ function mediumAttack() {
       hitship = false;
     }
   }
-  console.log(hitCoordinates);
 }
 
 function hardAttack() {
@@ -1713,14 +1824,6 @@ function hardAttack() {
     console.log("col:" + String.fromCharCode(col+65));
     if (row == 9) console.log("row: 10");
     else console.log("row: " + String.fromCharCode(row+49));
-
-
-    //Console logs
-    console.log(specAttackCoordinate);
-    console.log(col);
-    console.log(row);
-    console.log(p1ShipLoc);
-
 
     for(let i=0; i<3; i++){
       for(let j=0; j<3; j++) {
